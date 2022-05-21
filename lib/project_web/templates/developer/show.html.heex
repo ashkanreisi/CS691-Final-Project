@@ -1,0 +1,67 @@
+<h1>Show Developer</h1>
+
+<ul>
+
+  <li>
+    <strong>First Name:</strong>
+    <%= @developer.first_name %>
+  </li>
+
+  <li>
+    <strong>Last Name:</strong>
+    <%= @developer.last_name %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @developer.email %>
+  </li>
+
+  <li>
+    <strong>City:</strong>
+    <%= hd(Project.Organization.get_developer_with_location(@developer.id)) %>
+  </li>
+  <li>
+    <strong>State:</strong>
+    <%= tl(Project.Organization.get_developer_with_location(@developer.id)) %>
+  </li>
+
+  <li>
+    <strong>Zip:</strong>
+    <%= @developer.zip %>
+  </li>
+
+  <li>
+    <strong>Area of Expertise:</strong>
+    <%= @developer.expertise.name %>
+  </li>
+
+</ul>
+
+<h2>Current Assignments</h2>
+
+<ul>
+  <%= if @assignments |> length == 0 do %>
+    <em>This developer is not assigned to any tasks.</em>
+  <% else %>
+    <%= for assignment <- @assignments, assignment.developer_id == @developer.id do %>
+      <h3> <%= assignment.name %> </h3>
+      <li><strong>Due:</strong> <%= assignment.due_date %></li>
+      <li><strong>Status:</strong> <%= assignment.status.name %></li>
+      <li><strong>Task:</strong> <%= assignment.task.name %></li>
+      <ul>
+        <li><strong>Description:</strong> <%= assignment.task.description %></li>
+        <li>
+          <strong>Area:</strong>
+          <%= for area <- @areas, area.id == assignment.task.area_id do %>
+          <!-- in theory this should only run once -->
+            <%= area.name %>
+          <%end%>
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+</ul>
+
+<span><%= link "Edit", to: Routes.developer_path(@conn, :edit, @developer) %></span> |
+<span><%= link "Back", to: Routes.developer_path(@conn, :index) %></span>
